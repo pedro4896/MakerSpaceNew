@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Dimensions, Alert, ActivityIndicator } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
-import api from './api'; // <<-- SERVIÇO AXIOS
+import api from './api/api'; // <<-- SERVIÇO AXIOS
 import { AppNavigationProp } from './App'; 
 
 const { width, height } = Dimensions.get('window');

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ScrollView, Alert, Platform, Dimensions, ActivityIndicator } from "react-native";
 import { useNavigation } from '@react-navigation/native';
-import api from './api'; // <<-- SERVIÇO AXIOS
+import api from './api/api'; // <<-- SERVIÇO AXIOS
 import { AppNavigationProp } from './App';
 
 const { width } = Dimensions.get('window');

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, FlatList, Dimensions, Platform, Alert, ActivityIndicator } from "react-native";
 import { Ionicons as Icon } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import api from './api'; // <<-- SERVIÇO AXIOS
+import api from './api/api'; // <<-- SERVIÇO AXIOS
 import { AppNavigationProp, RootStackParamList } from './App'; 
 
 const { width } = Dimensions.get('window');
