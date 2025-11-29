@@ -1,4 +1,4 @@
-import React, { useState, useRef, ClipboardEvent } from "react";
+import React, { useState, useRef } from "react";
 import { 
   View, 
   Text, 
@@ -8,21 +8,18 @@ import {
   Image,
   Keyboard, 
 } from "react-native";
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from './App'; 
+import { useNavigation } from '@react-navigation/native';
+import { AppNavigationProp } from './App'; 
 
 const robotAdjustableWrench2 = require('./assets/robot-adjustable-wrench-2.png'); 
 
 export const Verificacao = (): React.ReactElement => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<AppNavigationProp>(); 
   const [code, setCode] = useState<string[]>(["", "", "", "", ""]);
   const inputRefs = useRef<Array<TextInput | null>>([]); 
 
   const handleChange = (index: number, value: string) => {
-    if (!/^\d*$/.test(value)) {
-      return;
-    }
-
+    if (!/^\d*$/.test(value)) { return; }
     const newCode = [...code];
     newCode[index] = value;
     setCode(newCode);
@@ -44,32 +41,18 @@ export const Verificacao = (): React.ReactElement => {
     const verificationCode = code.join("");
     if (verificationCode.length === 5) {
       console.log("Verification code submitted:", verificationCode);
-      // Navegação para a tela principal (Feed)
       navigation.navigate('Feed');
     }
   };
 
   return (
     <View style={styles.container}>
+      {/* ... conteúdo ... */}
       <View style={styles.contentArea}>
-        {/* Imagem */}
-        <Image
-          source={robotAdjustableWrench2}
-          style={styles.image}
-        />
+        <Image source={robotAdjustableWrench2} style={styles.image} />
+        <Text style={styles.title}>Verifique o seu e-mail acabamos de {"\n"}enviar um código</Text>
+        <Text style={styles.description}>Insira no campo abaixo o código recebido por e-mail</Text>
 
-        {/* Texto de Verificação */}
-        <Text style={styles.title}>
-          Verifique o seu e-mail acabamos de {"\n"}
-          enviar um código
-        </Text>
-
-        {/* Descrição */}
-        <Text style={styles.description}>
-          Insira no campo abaixo o código recebido por e-mail
-        </Text>
-
-        {/* Container dos Inputs de Código */}
         <View style={styles.inputGroup}>
           {code.map((digit, index) => (
             <TextInput
@@ -86,87 +69,22 @@ export const Verificacao = (): React.ReactElement => {
           ))}
         </View>
 
-        {/* Botão Enviar - CONECTADO */}
-        <TouchableOpacity 
-          style={styles.button}
-          onPress={handleSubmit} 
-          accessibilityLabel="Enviar código de verificação"
-        >
-          <Text style={styles.buttonText}>
-            Enviar
-          </Text>
+        <TouchableOpacity style={styles.button} onPress={handleSubmit} accessibilityLabel="Enviar código de verificação">
+          <Text style={styles.buttonText}>Enviar</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
 };
 
-// --- Equivalência CSS/StyleSheet ---
 const styles = StyleSheet.create({
-  container: {
-    flex: 1, 
-    backgroundColor: 'white',
-    alignItems: 'center', 
-    paddingTop: 80, 
-  },
-  contentArea: {
-    width: '100%', 
-    maxWidth: 412, 
-    alignItems: 'center', 
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontFamily: 'System', 
-    fontWeight: 'bold',
-    color: '#000048',
-    fontSize: 20,
-    textAlign: 'center',
-    marginTop: 30, 
-  },
-  image: {
-    width: 239,
-    height: 303,
-    resizeMode: 'contain', 
-    marginBottom: 20,
-  },
-  description: {
-    fontFamily: 'System',
-    fontWeight: '500',
-    color: '#aaa7a7',
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 15, 
-    marginBottom: 30,
-  },
-  inputGroup: {
-    flexDirection: 'row',
-    justifyContent: 'center', 
-    gap: 19, 
-  },
-  inputBox: {
-    width: 41,
-    height: 48,
-    backgroundColor: '#d9d9d9',
-    borderRadius: 10,
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#000048',
-    borderWidth: 2,
-    borderColor: 'transparent', 
-  },
-  button: {
-    width: 181,
-    height: 44,
-    backgroundColor: '#000048',
-    borderRadius: 22, 
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 40, 
-  },
-  buttonText: {
-    fontWeight: 'bold',
-    color: 'white',
-    fontSize: 20,
-  },
+  container: { flex: 1, backgroundColor: 'white', alignItems: 'center', paddingTop: 80, },
+  contentArea: { width: '100%', maxWidth: 412, alignItems: 'center', paddingHorizontal: 20, },
+  title: { fontWeight: 'bold', color: '#000048', fontSize: 20, textAlign: 'center', marginTop: 30, },
+  image: { width: 239, height: 303, resizeMode: 'contain', marginBottom: 20, },
+  description: { fontWeight: '500', color: '#aaa7a7', fontSize: 16, textAlign: 'center', marginTop: 15, marginBottom: 30, },
+  inputGroup: { flexDirection: 'row', justifyContent: 'center', gap: 19, },
+  inputBox: { width: 41, height: 48, backgroundColor: '#d9d9d9', borderRadius: 10, textAlign: 'center', fontSize: 20, fontWeight: 'bold', color: '#000048', borderWidth: 2, borderColor: 'transparent', },
+  button: { width: 181, height: 44, backgroundColor: '#000048', borderRadius: 22, justifyContent: 'center', alignItems: 'center', marginTop: 40, },
+  buttonText: { fontWeight: 'bold', color: 'white', fontSize: 20, },
 });

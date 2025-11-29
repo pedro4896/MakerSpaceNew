@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { View, ActivityIndicator, StyleSheet, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createNativeStackNavigator, NativeStackNavigationProp } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Login } from './Login';
 import { Cadastro } from './Cadastro';
 import { Verificacao } from './Verificacao';
@@ -32,11 +34,43 @@ export type RootStackParamList = {
   Conexoes: undefined;
 };
 
+// Tipo de navegação universal para ser usado com useNavigation<AppNavigationProp>()
+export type AppNavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [initialRoute, setInitialRoute] = useState('Login' as keyof RootStackParamList);
+
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        const userToken = await AsyncStorage.getItem('userToken');
+        if (userToken) {
+          setInitialRoute('Feed'); 
+        }
+      } catch (e) {
+        console.error("Failed to load login status", e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <View style={appStyles.loadingContainer}>
+        <ActivityIndicator size="large" color="#000048" />
+        <Text style={{ marginTop: 10 }}>Carregando dados...</Text>
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator 
-        initialRouteName="Login"
+        initialRouteName={initialRoute} 
         screenOptions={{
           headerShown: false
         }}
@@ -57,3 +91,11 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+const appStyles = StyleSheet.create({
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
+});
