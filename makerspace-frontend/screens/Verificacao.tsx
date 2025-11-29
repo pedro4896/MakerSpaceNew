@@ -11,7 +11,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { AppNavigationProp } from './App'; 
 
-const robotAdjustableWrench2 = require('./assets/robot-adjustable-wrench-2.png'); 
+const robotAdjustableWrench2 = require('../assets/robot-adjustable-wrench-2.png'); 
 
 export const Verificacao = (): React.ReactElement => {
   const navigation = useNavigation<AppNavigationProp>(); 

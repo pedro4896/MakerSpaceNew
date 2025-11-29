@@ -5,7 +5,7 @@ import { AppNavigationProp } from './App';
 
 const { width } = Dimensions.get('window');
 
-const assets = { backIcon: require('./assets/image-26.png'), };
+const assets = { backIcon: require('../assets/image-26.png'), };
 
 interface ActionButtonProps { title: string; isPrimary?: boolean; isWhite?: boolean; onPress: () => void; }
 

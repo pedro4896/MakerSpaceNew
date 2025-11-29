@@ -7,8 +7,8 @@ import { AppNavigationProp } from './App';
 const { width } = Dimensions.get('window');
 
 const assets = {
-  logo: require('./assets/image-26.png'), settingsIcon: require('./assets/image-24.png'), profileAvatar: require('./assets/image-8.png'), coverImage: require('./assets/2148863383-1.png'),
-  postImage1: require('./assets/2148863383-1.png'), postImage2: require('./assets/espacomaker-1.png'), postImage3: require('./assets/IMG-4331-1.png'), postImage4: require('./assets/oficina-de-eletronica-no-ensino-medio-02-1.png'),
+  logo: require('../assets/image-26.png'), settingsIcon: require('../assets/image-24.png'), profileAvatar: require('../assets/image-8.png'), coverImage: require('../assets/2148863383-1.png'),
+  postImage1: require('../assets/2148863383-1.png'), postImage2: require('../assets/espacomaker-1.png'), postImage3: require('../assets/IMG-4331-1.png'), postImage4: require('../assets/oficina-de-eletronica-no-ensino-medio-02-1.png'),
 };
 const projectGallery = [
   { id: 1, image: assets.postImage1 }, { id: 2, image: assets.postImage2 }, { id: 3, image: assets.postImage3 }, { id: 4, image: assets.postImage4 },

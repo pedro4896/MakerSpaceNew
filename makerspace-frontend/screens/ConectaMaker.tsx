@@ -6,7 +6,7 @@ import { AppNavigationProp } from './App';
 
 const { width, height } = Dimensions.get('window');
 
-const assets = { backIcon: require('./assets/image-26.png'), mapa: require('./assets/mapa.png'), };
+const assets = { backIcon: require('../assets/image-26.png'), mapa: require('../assets/mapa.png'), };
 
 export const ConectaMaker: React.FC = () => {
     const navigation = useNavigation<AppNavigationProp>();

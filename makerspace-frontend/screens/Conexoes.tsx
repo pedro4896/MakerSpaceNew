@@ -6,7 +6,7 @@ import { AppNavigationProp } from './App';
 
 const { width } = Dimensions.get('window');
 
-const assets = { backIcon: require('./assets/image-26.png'), avatarMaria: require('./assets/image-14.png'), avatarJose: require('./assets/image-14.png'), };
+const assets = { backIcon: require('../assets/image-26.png'), avatarMaria: require('../assets/image-14.png'), avatarJose: require('../assets/image-14.png'), };
 
 interface Connection { id: number; name: string; description: string; avatar: any; status: 'Conectar' | 'Conectado'; }
 const connectionsData: Connection[] = [

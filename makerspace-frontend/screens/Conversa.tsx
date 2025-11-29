@@ -7,9 +7,9 @@ import { useNavigation } from '@react-navigation/native';
 import { AppNavigationProp } from './App'; 
 
 interface Message { id: number; text: string; isUser: boolean; avatar?: any; }
-const backIcon = require('./assets/image-37.png');
-const userAvatar = require('./assets/image-36.png');
-const friendAvatar = require('./assets/Image-38.png');
+const backIcon = require('../assets/image-37.png');
+const userAvatar = require('../assets/image-36.png');
+const friendAvatar = require('../assets/Image-38.png');
 const mockMessages: Message[] = [ /* ... dados ... */ ];
 
 const ChatBubble: React.FC<{ message: Message; maxWidth: number }> = ({ message, maxWidth }) => {

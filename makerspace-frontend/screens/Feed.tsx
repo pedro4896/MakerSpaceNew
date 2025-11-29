@@ -2,16 +2,16 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, FlatList, Dimensions, Platform, Alert, ActivityIndicator } from "react-native";
 import { Ionicons as Icon } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import api from './api/api'; // <<-- SERVIÇO AXIOS
+import api from '../api'; // <<-- SERVIÇO AXIOS
 import { AppNavigationProp, RootStackParamList } from './App'; 
 
 const { width } = Dimensions.get('window');
 
 interface PostData { id: string; author: string; authorImage: string; postImage: string; description: string; timestamp: string; }
 const assets = {
-  authorImage1: require('./assets/image-8-3.png'), authorImage2: require('./assets/image-8-2.png'), authorImage3: require('./assets/image-8.png'),
-  postImage1: require('./assets/2148863383-1.png'), postImage2: require('./assets/o-ensino-da-robotica-na-infancia-faz-diferenca-para-a-vida-1.png'), postImage3: require('./assets/hq720-1.png'),
-  robotLogo: require('./assets/robot-6654031-640-2.png'),
+  authorImage1: require('../assets/image-8-3.png'), authorImage2: require('../assets/image-8-2.png'), authorImage3: require('../assets/image-8.png'),
+  postImage1: require('../assets/2148863383-1.png'), postImage2: require('../assets/o-ensino-da-robotica-na-infancia-faz-diferenca-para-a-vida-1.png'), postImage3: require('../assets/hq720-1.png'),
+  robotLogo: require('../assets/robot-6654031-640-2.png'),
 };
 
 const ActionButton: React.FC<{ label: string; iconName: string }> = ({ label, iconName }) => (

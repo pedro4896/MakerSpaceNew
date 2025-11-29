@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ScrollView, Dimensions, Platform, Alert, ActivityIndicator } from "react-native";
 import { Ionicons as Icon } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import api from './api/api'; // <<-- SERVIÇO AXIOS
+import api from '../api'; // <<-- SERVIÇO AXIOS
 import { AppNavigationProp } from './App'; 
 
 const { width } = Dimensions.get('window');
 
-const assets = { backIcon: require('./assets/image-26.png'), group49: require('./assets/Group-49.png'), };
+const assets = { backIcon: require('../assets/image-26.png'), group49: require('../assets/Group-49.png'), };
 
 export const CriarProjeto = (): React.ReactElement => {
     const navigation = useNavigation<AppNavigationProp>();

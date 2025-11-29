@@ -4,10 +4,10 @@ import { Ionicons as Icon } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import { AppNavigationProp } from './App'; 
-import api from './api/api'; // <<-- SERVIÇO AXIOS (Usado indiretamente no logout)
+import api from '../api'; // <<-- SERVIÇO AXIOS (Usado indiretamente no logout)
 
 const { width } = Dimensions.get('window');
-const assets = { backIcon: require('./assets/image-26.png'), searchIcon: require('./assets/image-25.png'), };
+const assets = { backIcon: require('../assets/image-26.png'), searchIcon: require('../assets/image-25.png'), };
 
 interface ConfigItemProps { iconName: string; title: string; onPress: () => void; }
 

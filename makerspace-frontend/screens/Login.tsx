@@ -6,7 +6,7 @@ import api from '../api';
 import { AppNavigationProp } from './App'; 
 
 const { width, height } = Dimensions.get('window');
-const robotImage = require('./assets/robot-6654031-640-1.png'); 
+const robotImage = require('../assets/robot-6654031-640-1.png'); 
 
 export const Login: React.FC = () => {
   const navigation = useNavigation<AppNavigationProp>(); 

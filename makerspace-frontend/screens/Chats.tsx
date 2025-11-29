@@ -7,8 +7,8 @@ import { AppNavigationProp } from './App';
 const { width } = Dimensions.get('window');
 
 interface ChatItemData { id: number; name: string; message: string; time: string; avatar: any; }
-const avatarJulioCesar = require('./assets/image.png');
-const backIcon = require('./assets/image-34.png'); 
+const avatarJulioCesar = require('../assets/image.png');
+const backIcon = require('../assets/image-34.png'); 
 
 const chatData: ChatItemData[] = [
   { id: 1, name: "Júlio César", message: "Aaah, que bom...", time: "2:40PM", avatar: avatarJulioCesar, },
