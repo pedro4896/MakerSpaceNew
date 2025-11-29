@@ -1,4 +1,3 @@
-// index.js
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -18,6 +17,15 @@ const postRoutes = require('./src/routes/posts');
 
 app.use(API_BASE + '/auth', authRoutes);
 app.use(API_BASE + '/posts', postRoutes);
+
+// ROTA DE STATUS DE SAÚDE (HEALTH CHECK) <--- NOVO
+app.get('/', (req, res) => {
+    res.send('MakerSpace Backend is running!');
+});
+// ROTA DE STATUS DA API (HEALTH CHECK) <--- NOVO
+app.get(API_BASE, (req, res) => {
+    res.json({ status: 'API Online', version: '1.0' });
+});
 
 // Teste de Conexão e Início do Servidor
 async function startServer() {
