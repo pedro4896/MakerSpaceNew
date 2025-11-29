@@ -15,27 +15,25 @@ import {
     KeyboardAvoidingView,
 } from "react-native";
 import { Ionicons as Icon } from '@expo/vector-icons';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from './App'; 
 
 const { width, height } = Dimensions.get('window');
 
 // Mapeamento de Assets
 const assets = {
-    // Ícone de Logo/Voltar (image23)
     backIcon: require('./assets/image-26.png'),
-    // Fundo do Header (rectangle11.svg)
     headerBackground: require('./assets/rectangle-11.svg'),
-    // Fundo do Mapa (image36) - Substituímos pela cor, pois o mapa é dinâmico
-    // Ícone de Busca/Ação (image1) - Substituímos por vetor
     mapa: require('./assets/mapa.png'),
 };
 
 export const ConectaMaker: React.FC = () => {
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const [searchText, setSearchText] = useState("");
 
-    // Calcula alturas responsivas para header e bottom menu
     const statusBarHeight = Platform.OS === 'ios' ? 44 : (StatusBar.currentHeight || 24);
-    const HEADER_HEIGHT = Math.round(statusBarHeight + 46); // altura do header adaptativa
-    const BOTTOM_MENU_MIN = Math.round(Math.max(140, height * 0.18)); // altura mínima do menu inferior
+    const HEADER_HEIGHT = Math.round(statusBarHeight + 46); 
+    const BOTTOM_MENU_MIN = Math.round(Math.max(140, height * 0.18)); 
 
     const styles = createStyles(HEADER_HEIGHT, BOTTOM_MENU_MIN);
 
@@ -50,6 +48,11 @@ export const ConectaMaker: React.FC = () => {
     const handleFilter = () => {
         Alert.alert("Filtrar", "Função para abrir o modal de filtros de laboratórios.");
     };
+    
+    const handleGoBack = () => {
+        navigation.goBack(); // CORREÇÃO: Chama a função goBack()
+    };
+
 
     return (
         <SafeAreaView style={styles.safeArea}>
@@ -68,7 +71,8 @@ export const ConectaMaker: React.FC = () => {
                 <View style={[styles.header, { height: HEADER_HEIGHT, paddingTop: statusBarHeight }]}>
                     <View style={styles.headerBackground} />
                     <View style={styles.headerContent}>
-                        <TouchableOpacity onPress={() => console.log('Voltar')} style={styles.backButton}>
+                        {/* Botão de Voltar - CONECTADO */}
+                        <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
                             <Image source={assets.backIcon} style={styles.backIcon} resizeMode="contain" />
                         </TouchableOpacity>
                         <Text style={styles.headerTitle}>Conecta Maker</Text>
@@ -126,8 +130,8 @@ const createStyles = (HEADER_HEIGHT: number, BOTTOM_MENU_MIN: number) => StyleSh
         backgroundColor: '#e6e6e6',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: HEADER_HEIGHT, // evita ser coberto pelo header
-        paddingBottom: BOTTOM_MENU_MIN, // evita ser coberto pelo bottom menu
+        paddingTop: HEADER_HEIGHT, 
+        paddingBottom: BOTTOM_MENU_MIN, 
     },
     mapImage: {
         width: '100%',
@@ -208,7 +212,7 @@ const createStyles = (HEADER_HEIGHT: number, BOTTOM_MENU_MIN: number) => StyleSh
         fontSize: Math.round(Math.max(14, width * 0.036)),
         fontWeight: '700',
         color: '#333',
-        flex: 1, // ocupa o espaço restante
+        flex: 1, 
     },
     searchIconWrapper: {
         marginLeft: 10,
@@ -222,7 +226,7 @@ const createStyles = (HEADER_HEIGHT: number, BOTTOM_MENU_MIN: number) => StyleSh
         flexDirection: 'row',
         justifyContent: 'space-between',
         width: '100%',
-        flexWrap: 'wrap', // quebra em telas estreitas
+        flexWrap: 'wrap', 
     },
     actionButton: {
         flex: 1,
@@ -233,7 +237,7 @@ const createStyles = (HEADER_HEIGHT: number, BOTTOM_MENU_MIN: number) => StyleSh
         justifyContent: 'center',
         alignItems: 'center',
         marginHorizontal: 5,
-        marginBottom: 8, // para quando quebrar a linha
+        marginBottom: 8, 
     },
     actionButtonText: {
         fontSize: 15,

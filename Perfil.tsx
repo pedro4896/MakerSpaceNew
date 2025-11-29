@@ -11,29 +11,29 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Ionicons as Ionicons } from '@expo/vector-icons';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from './App'; 
 
 const { width } = Dimensions.get('window');
 
-// 1. Mapeamento de Assets (Requer que os arquivos estejam na pasta assets)
+// 1. Mapeamento de Assets 
 const assets = {
   // Header
-  logo: require('./assets/image-26.png'), // Logo
-  settingsIcon: require('./assets/image-24.png'), // Ícone de configurações/edição
-  searchIcon: require('./assets/image.png'), // Ícone de busca (se for o caso)
+  logo: require('./assets/image-26.png'), 
+  settingsIcon: require('./assets/image-24.png'), 
 
   // Perfil Info
-  profileAvatar: require('./assets/image-8.png'), // Avatar do usuário
-  coverImage: require('./assets/2148863383-1.png'), // Imagem de fundo/capa
+  profileAvatar: require('./assets/image-8.png'), 
+  coverImage: require('./assets/2148863383-1.png'), 
 
   // Galeria de Projetos (Exemplos)
-  postImage1: require('./assets/2148863383-1.png'), // Post 1
-  postImage2: require('./assets/espacomaker-1.png'), // Post 2
-  postImage3: require('./assets/IMG-4331-1.png'), // Post 3
-  postImage4: require('./assets/oficina-de-eletronica-no-ensino-medio-02-1.png'), // Post 4
-  // ... continue mapeando as outras 8 imagens de projeto conforme necessário
+  postImage1: require('./assets/2148863383-1.png'), 
+  postImage2: require('./assets/espacomaker-1.png'), 
+  postImage3: require('./assets/IMG-4331-1.png'), 
+  postImage4: require('./assets/oficina-de-eletronica-no-ensino-medio-02-1.png'), 
 };
 
-// Dados da Galeria (apenas as primeiras 6 para demonstração do layout)
+// Dados da Galeria 
 const projectGallery = [
   { id: 1, image: assets.postImage1 },
   { id: 2, image: assets.postImage2 },
@@ -53,96 +53,114 @@ const GalleryItem: React.FC<{ image: any }> = ({ image }) => (
 );
 
 export const Perfil: React.FC = () => {
-  return (
-    <SafeAreaView style={styles.container}>
-      {/* --- HEADER (FIXO) --- */}
-      <View style={styles.header}>
-        {/* Fundo do Header (Retângulo) */}
-        <View style={styles.headerBackground} /> 
-        <View style={styles.headerContent}>
-          {/* Logo (image26) */}
-          <Image source={assets.logo} style={styles.logo} resizeMode="contain" />
-          
-          {/* Título centralizado (posição absoluta para garantir centralização) */}
-          <Text style={styles.headerTitle}>Perfil</Text>
-          
-          {/* Ícone de Configurações/Edição (image24) */}
-          <TouchableOpacity style={styles.settingsButton} onPress={() => console.log('Configurações')}>
-            <Image source={assets.settingsIcon} style={styles.settingsIcon} resizeMode="contain" />
-          </TouchableOpacity>
-        </View>
-      </View>
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-      {/* --- CONTEÚDO SCROLLABLE (Perfil + Galeria) --- */}
-      <ScrollView 
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-      >
-        <View style={styles.profileSection}>
-          
-          {/* Avatar e Infos Básicas */}
-          <View style={styles.bioContainer}>
-            <Image source={assets.profileAvatar} style={styles.avatar} resizeMode="cover" />
-            <View style={styles.bioText}>
-              <Text style={styles.nameText}>Ana Júlia</Text>
-              <Text style={styles.usernameText}>@anajulia</Text>
+    const handleSettingsPress = () => {
+        navigation.navigate('Configuracoes');
+    };
+
+    // Função para o botão "Voltar" do cabeçalho (que usa o ícone de logo)
+    const handleGoBack = () => {
+        navigation.goBack(); // CORREÇÃO: Chama a função goBack()
+    };
+    
+    // Função de navegação para a Navbar
+    const navigateToScreen = (screenName: keyof RootStackParamList) => {
+        navigation.navigate(screenName);
+    };
+
+    return (
+        <SafeAreaView style={styles.container}>
+            {/* --- HEADER (FIXO) --- */}
+            <View style={styles.header}>
+                {/* Fundo do Header (Retângulo) */}
+                <View style={styles.headerBackground} /> 
+                <View style={styles.headerContent}>
+                    {/* Logo/Botão Voltar - CONECTADO */}
+                    <TouchableOpacity onPress={handleGoBack}>
+                        <Image source={assets.logo} style={styles.logo} resizeMode="contain" />
+                    </TouchableOpacity>
+                    
+                    {/* Título centralizado (posição absoluta para garantir centralização) */}
+                    <Text style={styles.headerTitle}>Perfil</Text>
+                    
+                    {/* Ícone de Configurações/Edição (image24) - CONECTADO */}
+                    <TouchableOpacity style={styles.settingsButton} onPress={handleSettingsPress}>
+                        <Image source={assets.settingsIcon} style={styles.settingsIcon} resizeMode="contain" />
+                    </TouchableOpacity>
+                </View>
             </View>
-          </View>
 
-          {/* Imagem de Capa (image.png) */}
-          <Image source={assets.coverImage} style={styles.coverImage} resizeMode="cover" />
-          
-          {/* Estatísticas (Projetos e Conexões) */}
-          <View style={styles.statsContainer}>
-            <View style={styles.statItem}>
-              <Text style={styles.statCount}>10</Text>
-              <Text style={styles.statLabel}>Projetos</Text>
+            {/* --- CONTEÚDO SCROLLABLE (Perfil + Galeria) --- */}
+            <ScrollView 
+                style={styles.scrollView}
+                contentContainerStyle={styles.scrollContent}
+            >
+                <View style={styles.profileSection}>
+                    
+                    {/* Avatar e Infos Básicas */}
+                    <View style={styles.bioContainer}>
+                        <Image source={assets.profileAvatar} style={styles.avatar} resizeMode="cover" />
+                        <View style={styles.bioText}>
+                        <Text style={styles.nameText}>Ana Júlia</Text>
+                        <Text style={styles.usernameText}>@anajulia</Text>
+                        </View>
+                    </View>
+
+                    {/* Imagem de Capa (image.png) */}
+                    <Image source={assets.coverImage} style={styles.coverImage} resizeMode="cover" />
+                    
+                    {/* Estatísticas (Projetos e Conexões) */}
+                    <View style={styles.statsContainer}>
+                        <View style={styles.statItem}>
+                        <Text style={styles.statCount}>10</Text>
+                        <Text style={styles.statLabel}>Projetos</Text>
+                        </View>
+                        <View style={styles.statItem}>
+                        <Text style={styles.statCount}>200</Text>
+                        <Text style={styles.statLabel}>Conexões</Text>
+                        </View>
+                    </View>
+                </View>
+
+                {/* --- Galeria de Projetos --- */}
+                <View style={styles.galleryHeader}>
+                    <Text style={styles.galleryTitle}>Galeria de Projetos</Text>
+                    {/* Ícones de ordenação/filtro */}
+                    <View style={styles.galleryIcons}>
+                        <TouchableOpacity style={{ padding: 5 }}><Ionicons name="grid-outline" size={24} color="black" /></TouchableOpacity>
+                        <TouchableOpacity style={{ padding: 5 }}><Ionicons name="list-outline" size={24} color="black" /></TouchableOpacity>
+                    </View>
+                </View>
+                
+                <View style={styles.galleryContainer}>
+                    {projectGallery.map((item) => (
+                        <GalleryItem key={item.id} image={item.image} />
+                    ))}
+                </View>
+
+            </ScrollView>
+
+            {/* --- FOOTER/NAV BAR (FIXO NA PARTE INFERIOR) - CONECTADO --- */}
+            <View style={styles.footer}>
+                <TouchableOpacity style={styles.navButton} onPress={() => navigateToScreen('Feed')}>
+                    <Ionicons name="home-outline" size={30} color="white" /> 
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.navButton} onPress={() => navigateToScreen('ConectaMaker')}>
+                    <Ionicons name="compass-outline" size={30} color="white" /> 
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.navButton} onPress={() => navigateToScreen('Conexoes')}>
+                    <Ionicons name="location-outline" size={30} color="white" /> 
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.navButton} onPress={() => navigateToScreen('Chats')}>
+                    <Ionicons name="chatbubble-outline" size={30} color="white" /> 
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.navButton} onPress={() => navigateToScreen('PublicarProjetos')}>
+                    <Ionicons name="ellipsis-horizontal-circle-outline" size={30} color="white" /> 
+                </TouchableOpacity>
             </View>
-            <View style={styles.statItem}>
-              <Text style={styles.statCount}>200</Text>
-              <Text style={styles.statLabel}>Conexões</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* --- Galeria de Projetos --- */}
-        <View style={styles.galleryHeader}>
-          <Text style={styles.galleryTitle}>Galeria de Projetos</Text>
-          {/* Ícones de ordenação/filtro */}
-          <View style={styles.galleryIcons}>
-            <TouchableOpacity style={{ padding: 5 }}><Ionicons name="grid-outline" size={24} color="black" /></TouchableOpacity>
-            <TouchableOpacity style={{ padding: 5 }}><Ionicons name="list-outline" size={24} color="black" /></TouchableOpacity>
-          </View>
-        </View>
-        
-        <View style={styles.galleryContainer}>
-            {projectGallery.map((item) => (
-                <GalleryItem key={item.id} image={item.image} />
-            ))}
-        </View>
-
-      </ScrollView>
-
-      {/* --- FOOTER/NAV BAR (FIXO NA PARTE INFERIOR) --- */}
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.navButton} onPress={() => console.log('Home')}>
-            <Ionicons name="home-outline" size={30} color="white" /> 
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton} onPress={() => console.log('Explorar')}>
-            <Ionicons name="compass-outline" size={30} color="white" /> 
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton} onPress={() => console.log('Localização')}>
-            <Ionicons name="location-outline" size={30} color="white" /> 
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton} onPress={() => console.log('Chat')}>
-            <Ionicons name="chatbubble-outline" size={30} color="white" /> 
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.navButton} onPress={() => console.log('Mais')}>
-            <Ionicons name="ellipsis-horizontal-circle-outline" size={30} color="white" /> 
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
-  );
+        </SafeAreaView>
+    );
 };
 
 export default Perfil;
@@ -150,13 +168,12 @@ export default Perfil;
 // --- Estilos da Galeria ---
 const ITEM_MARGIN = 5;
 const NUM_COLUMNS = 3;
-// Calcula a largura de cada item para garantir que 3 caibam, considerando margens
 const ITEM_WIDTH = (width / NUM_COLUMNS) - (ITEM_MARGIN * 2);
 
 const galleryStyles = StyleSheet.create({
   itemContainer: {
     width: ITEM_WIDTH,
-    height: ITEM_WIDTH, // Altura igual à largura para quadrado
+    height: ITEM_WIDTH, 
     margin: ITEM_MARGIN,
   },
   image: {
@@ -229,7 +246,7 @@ const styles = StyleSheet.create({
     marginTop: HEADER_HEIGHT,
   },
   scrollContent: {
-    paddingBottom: FOOTER_HEIGHT, // Espaço para o footer fixo
+    paddingBottom: FOOTER_HEIGHT, 
   },
 
   // Perfil Superior

@@ -12,29 +12,26 @@ import {
     Alert,
 } from "react-native";
 import { Ionicons as Icon } from '@expo/vector-icons';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from './App'; 
 
 const { width } = Dimensions.get('window');
 
 // Mapeamento de Assets
 const assets = {
-    // Ícone de Retorno
     backIcon: require('./assets/image-26.png'),
-    // Fundo do Header (rectangle40.svg)
-    headerBackground: require('./assets/Rectangle-40.svg'), // Imagem de fundo não é usada, apenas a cor
-    // Ícone de Upload (vector.svg)
+    headerBackground: require('./assets/Rectangle-40.svg'), 
     uploadIcon: require('./assets/Vector.svg'),
-    // Group 49 (Linha ou separador na parte inferior)
     group49: require('./assets/Group-49.png'),
 };
 
 export const CriarProjeto = (): React.ReactElement => {
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const [mediaUri, setMediaUri] = useState<string | null>(null);
     const [caption, setCaption] = useState("");
 
     const handleMediaSelection = () => {
-        // Implementação real usaria expo-image-picker para abrir a galeria/câmera
         Alert.alert("Seleção de Mídia", "Aqui você chamaria a galeria/câmera.");
-        // Exemplo: setMediaUri('uri_da_imagem_selecionada');
     };
 
     const handlePublish = () => {
@@ -43,7 +40,11 @@ export const CriarProjeto = (): React.ReactElement => {
             return;
         }
         console.log("Projeto Publicado:", { mediaUri, caption });
-        // Lógica de envio para o servidor
+        navigation.goBack(); 
+    };
+    
+    const handleGoBack = () => {
+        navigation.goBack(); // CORREÇÃO: Chama a função goBack()
     };
 
     return (
@@ -55,8 +56,8 @@ export const CriarProjeto = (): React.ReactElement => {
                 <View style={styles.headerBackground} />
                 <View style={styles.headerContent}>
 
-                    {/* Botão Voltar (image38) */}
-                    <TouchableOpacity onPress={() => console.log('Voltar')} style={styles.backButton}>
+                    {/* Botão Voltar (image38) - CONECTADO */}
+                    <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
                         <Image source={assets.backIcon} style={styles.backIcon} resizeMode="contain" />
                     </TouchableOpacity>
 
@@ -105,19 +106,18 @@ export const CriarProjeto = (): React.ReactElement => {
                         placeholder="Digite aqui a descrição do seu projeto..."
                         placeholderTextColor="#666"
                         multiline
-                        textAlignVertical="top" // Alinha o texto ao topo em Android
+                        textAlignVertical="top" 
                     />
                 </View>
 
                 {/* Separador (group-49.png) */}
                 <Image source={assets.group49} style={styles.separator} resizeMode="stretch" />
 
-                {/* --- 3. BOTÃO PUBLICAR (Fixo na parte inferior do scroll) --- */}
+                {/* --- 3. BOTÃO PUBLICAR (Fixo na parte inferior do scroll) - CONECTADO */}
                 <View style={styles.buttonRow}>
                     <TouchableOpacity
                         style={styles.publishButton}
                         onPress={handlePublish}
-                        // Mude a opacidade se faltar mídia/legenda
                         activeOpacity={mediaUri && caption.trim().length > 0 ? 0.7 : 1}
                         disabled={!mediaUri || caption.trim().length === 0}
                     >
@@ -125,7 +125,7 @@ export const CriarProjeto = (): React.ReactElement => {
                     </TouchableOpacity>
                 </View>
 
-                <View style={{ height: 50 }} /> {/* Espaçamento final */}
+                <View style={{ height: 50 }} /> 
 
             </ScrollView>
 
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         height: '100%',
-        backgroundColor: '#000048', // Cor do rectangle40.svg (fundo)
+        backgroundColor: '#000048', 
     },
     headerContent: {
         flexDirection: 'row',
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     // ScrollView (Conteúdo)
     scrollView: {
         flex: 1,
-        marginTop: HEADER_HEIGHT, // Abaixo do Header fixo
+        marginTop: HEADER_HEIGHT, 
     },
     scrollContent: {
         paddingHorizontal: 15,
@@ -194,10 +194,10 @@ const styles = StyleSheet.create({
     // 1. Bloco de Mídia
     mediaBlock: {
         width: '100%',
-        height: 323, // Altura fixa do design original
+        height: 323, 
         backgroundColor: '#d9d9d9',
         borderRadius: 15,
-        marginTop: 20, // top-[108px]
+        marginTop: 20, 
         justifyContent: 'center',
         alignItems: 'center',
         overflow: 'hidden',
@@ -211,7 +211,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     dragText: {
-        // Inter-SemiBold_Italic, text-base, text-[#000048]
         fontSize: 16,
         fontWeight: '600',
         fontStyle: 'italic',
@@ -223,7 +222,7 @@ const styles = StyleSheet.create({
     buttonRow: {
         width: '100%',
         flexDirection: 'row',
-        justifyContent: 'flex-end', // Alinha à direita
+        justifyContent: 'flex-end', 
         marginTop: 15,
         marginBottom: 15,
     },
@@ -234,10 +233,8 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         justifyContent: 'center',
         alignItems: 'center',
-        // Simula a posição direita (left: 201px)
     },
     searchImageButtonText: {
-        // Inter-SemiBold_Italic, text-base, text-white
         fontSize: 16,
         fontWeight: '600',
         fontStyle: 'italic',
@@ -247,14 +244,13 @@ const styles = StyleSheet.create({
     // 2. Bloco de Legenda
     captionBlock: {
         width: '100%',
-        height: 323, // Altura fixa
+        height: 323, 
         backgroundColor: '#d9d9d9',
         borderRadius: 15,
         marginTop: 20,
         padding: 15,
     },
     captionLabel: {
-        // Inter-SemiBold_Italic, text-base, text-[#000048]
         fontSize: 16,
         fontWeight: '600',
         fontStyle: 'italic',
@@ -273,7 +269,7 @@ const styles = StyleSheet.create({
     // Separador
     separator: {
         width: '100%',
-        height: 1, // Altura mínima para a linha
+        height: 1, 
         marginVertical: 15,
     },
 
@@ -285,10 +281,8 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         justifyContent: 'center',
         alignItems: 'center',
-        // Alinhamento à direita (left: 201px)
     },
     publishButtonText: {
-        // Inter-SemiBold_Italic, text-base, text-white
         fontSize: 16,
         fontWeight: '600',
         fontStyle: 'italic',

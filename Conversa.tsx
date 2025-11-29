@@ -13,6 +13,8 @@ import {
     useWindowDimensions,
 } from "react-native";
 import { Ionicons as Icon } from '@expo/vector-icons';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from './App'; 
 
 interface Message {
     id: number;
@@ -59,10 +61,10 @@ const ChatBubble: React.FC<{ message: Message; maxWidth: number }> = ({ message,
 
 // --- Tela Principal da Conversa ---
 export const ConversaComUsuario = (): React.ReactElement => {
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const [inputText, setInputText] = useState("");
     const { width, height } = useWindowDimensions();
 
-    // Responsividade baseada na tela
     const headerHeight = Math.max(64, Math.round(height * 0.11));
     const inputHeight = Math.max(56, Math.round(height * 0.085));
     const avatarSize = Math.max(40, Math.round(width * 0.12));
@@ -74,6 +76,10 @@ export const ConversaComUsuario = (): React.ReactElement => {
             setInputText("");
         }
     };
+    
+    const handleGoBack = () => {
+        navigation.goBack(); // CORREÇÃO: Chama a função goBack()
+    };
 
     const renderMessage = ({ item }: { item: Message }) => (
         <ChatBubble message={item} maxWidth={bubbleMaxWidth} />
@@ -84,7 +90,8 @@ export const ConversaComUsuario = (): React.ReactElement => {
             {/* Header fixo */}
             <View style={[styles.header, { height: headerHeight, paddingTop: Platform.OS === 'ios' ? 12 : 8, borderBottomLeftRadius: Math.round(width * 0.06), borderBottomRightRadius: Math.round(width * 0.06) }]}>
                 <View style={styles.headerContent}>
-                    <TouchableOpacity onPress={() => console.log('Voltar')} style={styles.backButton}>
+                    {/* Botão de Voltar - CONECTADO */}
+                    <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
                         <Image source={backIcon} style={[styles.backIcon, { width: Math.round(avatarSize * 0.7), height: Math.round(avatarSize * 0.7) }]} resizeMode="contain" />
                     </TouchableOpacity>
 
@@ -142,6 +149,8 @@ export const ConversaComUsuario = (): React.ReactElement => {
         </SafeAreaView>
     );
 };
+
+export default ConversaComUsuario;
 
 // --- Estilos da Bolha de Chat ---
 const bubbleStyles = StyleSheet.create({
@@ -254,5 +263,3 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 });
-
-export default ConversaComUsuario;

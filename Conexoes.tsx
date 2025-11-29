@@ -10,16 +10,15 @@ import {
     Dimensions,
 } from "react-native";
 import { Ionicons as Icon } from '@expo/vector-icons';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from './App'; 
 
 const { width } = Dimensions.get('window');
 
 // 1. Mapeamento de Assets
 const assets = {
-    // Ícone de Retorno
     backIcon: require('./assets/image-26.png'),
-    // Fundo do Header (rectangle19.svg)
     headerBackground: require('./assets/rectangle-19.svg'),
-    // Avatares (Exemplo: image-14.png e image.png)
     avatarMaria: require('./assets/image-14.png'),
     avatarJose: require('./assets/image-14.png'),
 };
@@ -48,7 +47,6 @@ const connectionsData: Connection[] = [
         avatar: assets.avatarJose,
         status: 'Conectar',
     },
-    // Você pode adicionar mais itens aqui para testar a rolagem
 ];
 
 
@@ -56,7 +54,6 @@ const connectionsData: Connection[] = [
 const ConnectionCard: React.FC<{ connection: Connection }> = ({ connection }) => {
     const handleConnect = () => {
         console.log(`Ação: ${connection.status} com ${connection.name}`);
-        // Lógica para enviar solicitação de conexão ou remover conexão
     };
 
     return (
@@ -90,10 +87,14 @@ const ConnectionCard: React.FC<{ connection: Connection }> = ({ connection }) =>
 
 // --- Tela Principal de Conexões ---
 export const Conexes = (): React.ReactElement => {
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const handleVerMais = () => {
         console.log("Ver mais conexões clicado.");
-        // Lógica para carregar mais itens da lista
+    };
+    
+    const handleGoBack = () => {
+        navigation.goBack(); // CORREÇÃO: Chama a função goBack()
     };
 
     return (
@@ -104,8 +105,8 @@ export const Conexes = (): React.ReactElement => {
                 <View style={styles.headerBackground} />
                 <View style={styles.headerContent}>
 
-                    {/* Botão Voltar (image37) */}
-                    <TouchableOpacity onPress={() => console.log('Voltar')} style={styles.backButton}>
+                    {/* Botão Voltar (image37) - CONECTADO */}
+                    <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
                         <Image source={assets.backIcon} style={styles.backIcon} resizeMode="contain" />
                     </TouchableOpacity>
 
@@ -128,7 +129,6 @@ export const Conexes = (): React.ReactElement => {
                     onPress={handleVerMais}
                 >
                     <Text style={styles.verMaisText}>Ver mais...</Text>
-                    {/* O vetor 'vector.svg' que parece ser um indicador de 'mais' ou 'próximo' pode ser substituído por um ícone de seta */}
                     <Icon name="chevron-down-outline" size={20} color="black" style={{ marginLeft: 5 }} />
                 </TouchableOpacity>
 
@@ -146,8 +146,8 @@ const cardStyles = StyleSheet.create({
         backgroundColor: '#000048',
         borderRadius: 20,
         padding: 15,
-        marginBottom: 20, // Espaçamento entre cards
-        alignSelf: 'center', // Centraliza o card na tela
+        marginBottom: 20, 
+        alignSelf: 'center', 
     },
     cardContent: {
         flexDirection: 'row',
@@ -155,32 +155,29 @@ const cardStyles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     avatar: {
-        width: 50, // w-[50px]
-        height: 48, // h-12
+        width: 50, 
+        height: 48, 
         borderRadius: 24,
         marginRight: 10,
     },
     textGroup: {
-        flex: 1, // Ocupa o espaço central
+        flex: 1, 
         marginRight: 10,
     },
     nameText: {
-        // Inter-Bold, text-2xl, text-white
         fontSize: 20,
         fontWeight: 'bold',
         color: 'white',
         marginBottom: 2,
     },
     descriptionText: {
-        // Inter-SemiBold, text-base, text-white
         fontSize: 16,
         fontWeight: '600',
         color: 'white',
         lineHeight: 20,
     },
     connectButton: {
-        // bg-[#fdf6f6] rounded-[15px]
-        width: 96, // w-24
+        width: 96, 
         height: 27,
         backgroundColor: '#fdf6f6',
         borderRadius: 15,
@@ -188,7 +185,6 @@ const cardStyles = StyleSheet.create({
         alignItems: 'center',
     },
     connectButtonText: {
-        // Inter-SemiBold, text-base, text-black
         fontSize: 16,
         fontWeight: '600',
         color: 'black',
@@ -221,7 +217,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         height: '100%',
-        backgroundColor: '#000048', // Cor do rectangle19.svg (fundo)
+        backgroundColor: '#000048', 
     },
     headerContent: {
         flexDirection: 'row',
@@ -231,7 +227,7 @@ const styles = StyleSheet.create({
         padding: 5,
     },
     backIcon: {
-        width: 30, // Ajustado
+        width: 30, 
         height: 30,
         marginRight: 10,
     },
@@ -239,13 +235,13 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 24,
         fontWeight: 'bold',
-        fontStyle: 'italic', // BoldItalic
+        fontStyle: 'italic', 
     },
 
     // Lista de Conexões (Scrollable)
     scrollView: {
         flex: 1,
-        marginTop: HEADER_HEIGHT + 30, // Abaixo do Header + espaçamento
+        marginTop: HEADER_HEIGHT + 30, 
         paddingHorizontal: 15,
     },
     scrollContent: {
@@ -260,13 +256,12 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         width: 300,
         height: 50,
-        backgroundColor: '#d9d9d9', // Fundo cinza do design original
+        backgroundColor: '#d9d9d9', 
         borderRadius: 15,
         marginTop: 20,
         alignSelf: 'center',
     },
     verMaisText: {
-        // Inter-Medium, text-base, text-black
         fontSize: 16,
         fontWeight: '500',
         color: 'black',

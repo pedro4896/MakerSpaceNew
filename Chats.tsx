@@ -10,8 +10,9 @@ import {
   Dimensions,
   Platform,
 } from "react-native";
-// Importando ícones (necessita da instalação: react-native-vector-icons)
 import { Ionicons as Icon } from '@expo/vector-icons';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from './App'; 
 
 const { width } = Dimensions.get('window');
 
@@ -21,14 +22,11 @@ interface ChatItemData {
   name: string;
   message: string;
   time: string;
-  avatar: any; // Usamos 'any' para aceitar o require() ou URI
+  avatar: any; 
 }
 
-// Assumindo que 'image.png' seja o avatar do Júlio César
 const avatarJulioCesar = require('./assets/image.png');
-// Ícones de navegação e busca (substituídos por vetores ou placeholders)
-const backIcon = require('./assets/image-34.png'); // Imagem de navegação de volta
-// image36 (Ícone de busca) foi substituído por Icon name="search-outline"
+const backIcon = require('./assets/image-34.png'); 
 
 const chatData: ChatItemData[] = [
   {
@@ -43,21 +41,24 @@ const chatData: ChatItemData[] = [
     name: "Arthur Silva",
     message: "O projeto está quase pronto!",
     time: "1:15PM",
-    avatar: avatarJulioCesar, // Placeholder
+    avatar: avatarJulioCesar, 
   },
   {
     id: 3,
     name: "Ana Júlia",
     message: "Me encontre no Makerspace.",
     time: "Ontem",
-    avatar: avatarJulioCesar, // Placeholder
+    avatar: avatarJulioCesar, 
   },
 ];
 
 
-// --- Componente de Item de Chat ---
-const ChatItemComponent: React.FC<{ chat: ChatItemData }> = ({ chat }) => (
-  <TouchableOpacity style={itemStyles.itemContainer}>
+// --- Componente de Item de Chat - CORRIGIDO O PROP navigation ---
+const ChatItemComponent: React.FC<{ chat: ChatItemData, navigation: NavigationProp<RootStackParamList> }> = ({ chat, navigation }) => (
+  <TouchableOpacity 
+    style={itemStyles.itemContainer}
+    onPress={() => navigation.navigate('Conversa', { chatName: chat.name })}
+  >
     {/* Avatar */}
     <Image 
       source={chat.avatar} 
@@ -79,11 +80,16 @@ const ChatItemComponent: React.FC<{ chat: ChatItemData }> = ({ chat }) => (
 
 // --- Tela Principal de Chats ---
 export const Chats: React.FC = () => {
-  
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   // Render Item para FlatList
   const renderItem = ({ item }: { item: ChatItemData }) => (
-    <ChatItemComponent chat={item} />
+    <ChatItemComponent chat={item} navigation={navigation} />
   );
+  
+  const handleGoBack = () => {
+      navigation.goBack(); // CORREÇÃO: Chama a função goBack()
+  };
 
   return (
     <View style={styles.container}>
@@ -91,8 +97,8 @@ export const Chats: React.FC = () => {
       {/* --- HEADER (Fixo) --- */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          {/* Botão de Retorno (image34) */}
-          <TouchableOpacity style={styles.backButton} onPress={() => console.log('Voltar')}>
+          {/* Botão de Retorno (image34) - CONECTADO */}
+          <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
             <Image source={backIcon} style={styles.backIcon} resizeMode="cover" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Chats</Text>
@@ -122,8 +128,6 @@ export const Chats: React.FC = () => {
       />
 
       {/* --- Elementos de rodapé (div e footer azul) --- */}
-      {/* Estes elementos parecem ser decorativos no design original e serão ignorados
-          ou simulados por elementos simples na parte inferior da tela */}
       <View style={styles.decorativeFooter} />
       <View style={styles.absoluteFooter} />
 
@@ -158,10 +162,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backButton: {
-    padding: 30,
+    padding: 10, 
   },
   backIcon: {
-    width: 30, // Reduzido de 81px para melhor visualização mobile
+    width: 30, 
     height: 30,
     marginRight: 10,
   },
@@ -171,7 +175,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   searchBarContainer: {
-    // Alinhamento à direita e largura fixa do design
     width: width * 0.5, 
     height: 33,
     backgroundColor: 'white',
@@ -180,7 +183,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 5,
     marginRight: 5,
-    // Adicionando sombra para simular shadow-[inset_0px_4px_4px_#00000040]
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -211,27 +213,26 @@ const styles = StyleSheet.create({
   listContent: {
     paddingHorizontal: 20,
     paddingTop: 15,
-    paddingBottom: 200, // Garante que a lista não fique escondida pelos footers decorativos
+    paddingBottom: 200, 
   },
 
   // Footers Decorativos (Simulando div e footer)
   decorativeFooter: {
     position: 'absolute',
-    bottom: 82, // Altura do footer principal
+    bottom: 82, 
     left: 0,
     right: 0,
-    height: 303, // Altura original
+    height: 303, 
     backgroundColor: 'white',
-    borderRadius: 30, // rounded-[30px]
+    borderRadius: 30, 
     zIndex: 1,
-    // Note: Esta View está no local do design, mas não é necessária para a funcionalidade.
   },
   absoluteFooter: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    height: 166, // Altura original
+    height: 166, 
     backgroundColor: '#000048',
     zIndex: 0,
   }
@@ -245,34 +246,31 @@ const itemStyles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#f0f0f0',
-    width: '100%', // Ocupa a largura total
+    width: '100%', 
   },
   avatar: {
     width: 49,
     height: 47,
-    borderRadius: 25, // Para ser circular
+    borderRadius: 25, 
     marginRight: 15,
   },
   content: {
-    flex: 1, // Ocupa o espaço central
+    flex: 1, 
     justifyContent: 'center',
   },
   name: {
-    // Inter-BlackItalic, text-xl, text-black
     fontSize: 20,
     fontWeight: '900',
     fontStyle: 'italic',
     color: 'black',
   },
   message: {
-    // Inter-Italic, text-base, text-black
     fontSize: 16,
     fontStyle: 'italic',
     color: 'black',
-    opacity: 0.7, // Para destacar o nome
+    opacity: 0.7, 
   },
   time: {
-    // Inter-Italic, text-base, text-black
     fontSize: 16,
     fontStyle: 'italic',
     color: 'black',

@@ -8,27 +8,25 @@ import {
     Platform,
     Dimensions,
 } from "react-native";
-// Importando ícones (necessita da instalação: react-native-vector-icons)
-import { Ionicons as Icon } from '@expo/vector-icons';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from './App'; 
 
 const { width } = Dimensions.get('window');
 
 // Mapeamento de Assets
 const assets = {
-    // Ícone de Retorno (image38)
     backIcon: require('./assets/image-26.png'),
 };
 
 // --- Componente Botão de Ação ---
 interface ActionButtonProps {
     title: string;
-    isPrimary?: boolean; // Cor principal (azul)
-    isWhite?: boolean;  // Fundo branco (para Criar Novo Projeto)
+    isPrimary?: boolean; 
+    isWhite?: boolean;  
     onPress: () => void;
 }
 
 const ActionButton: React.FC<ActionButtonProps> = ({ title, isPrimary = false, isWhite = false, onPress }) => {
-    // Use a permissive array type so we can push different style fragments without TypeScript errors
     let buttonStyle: any[] = [actionStyles.button];
     let textStyle: any[] = [actionStyles.buttonText];
 
@@ -39,12 +37,10 @@ const ActionButton: React.FC<ActionButtonProps> = ({ title, isPrimary = false, i
         buttonStyle.push(actionStyles.whiteBackground);
         textStyle.push(actionStyles.darkText);
     } else {
-        // Default: Background azul para Ver e Gerenciar
         buttonStyle.push(actionStyles.primaryBackground);
         textStyle.push(actionStyles.whiteText);
     }
 
-    // Estilos de texto específicos do design original (SemiBold Italic)
     textStyle.push(actionStyles.semiBoldItalic);
 
     return (
@@ -58,10 +54,22 @@ const ActionButton: React.FC<ActionButtonProps> = ({ title, isPrimary = false, i
 
 // --- Tela Principal ---
 export const PublicarProjetos = (): React.ReactElement => {
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const handleAction = (action: string) => {
         console.log(`Ação clicada: ${action}`);
-        // Implemente a navegação aqui
+        if (action === 'Voltar') {
+            navigation.goBack(); // CORREÇÃO: Chama a função goBack()
+            return;
+        }
+        if (action === 'Criar Projeto') {
+            navigation.navigate('CriarProjeto');
+            return;
+        }
+        if (action === 'Ver Projetos' || action === 'Gerenciar Conteúdo') {
+            navigation.navigate('Feed');
+            return;
+        }
     };
 
     return (
@@ -73,7 +81,7 @@ export const PublicarProjetos = (): React.ReactElement => {
                 <View style={styles.headerBackground} />
                 <View style={styles.headerContent}>
 
-                    {/* Botão Voltar (image38) */}
+                    {/* Botão Voltar (image38) - CONECTADO */}
                     <TouchableOpacity onPress={() => handleAction('Voltar')} style={styles.backButton}>
                         <Image source={assets.backIcon} style={styles.backIcon} resizeMode="contain" />
                     </TouchableOpacity>
@@ -88,21 +96,21 @@ export const PublicarProjetos = (): React.ReactElement => {
                 {/* Fundo Cinza para o Menu (d9d9d9) */}
                 <View style={styles.menuBackground}>
 
-                    {/* Botão 1: Criar novo projeto (Fundo Branco) */}
+                    {/* Botão 1: Criar novo projeto (Fundo Branco) - CONECTADO */}
                     <ActionButton
                         title="Criar novo projeto"
                         isWhite
                         onPress={() => handleAction('Criar Projeto')}
                     />
 
-                    {/* Botão 2: Ver projetos existentes (Fundo Azul) */}
+                    {/* Botão 2: Ver projetos existentes (Fundo Azul) - CONECTADO */}
                     <ActionButton
                         title="Ver projetos existentes"
                         isPrimary
                         onPress={() => handleAction('Ver Projetos')}
                     />
 
-                    {/* Botão 3: Gerenciar conteúdo publicado (Fundo Azul) */}
+                    {/* Botão 3: Gerenciar conteúdo publicado (Fundo Azul) - CONECTADO */}
                     <ActionButton
                         title="Gerenciar conteúdo publicado"
                         isPrimary
@@ -120,23 +128,23 @@ export const PublicarProjetos = (): React.ReactElement => {
 // --- Estilos dos Botões de Ação ---
 const actionStyles = StyleSheet.create({
     button: {
-        width: 280, // Largura fixa do design original
+        width: 280, 
         height: 50,
         borderRadius: 15,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 20, // Espaçamento entre os botões
-        ...Platform.select({ // Adiciona sombra para destaque
+        marginBottom: 20, 
+        ...Platform.select({ 
             ios: { shadowOpacity: 0.2, shadowRadius: 3, shadowOffset: { height: 2, width: 0 } },
             android: { elevation: 3 },
         }),
     },
     primaryBackground: {
-        backgroundColor: '#000048', // Cor primária (Azul Escuro)
+        backgroundColor: '#000048', 
     },
     whiteBackground: {
         backgroundColor: 'white',
-        borderWidth: 1, // Adiciona borda sutil para destaque
+        borderWidth: 1, 
         borderColor: '#ccc',
     },
     buttonText: {
@@ -179,7 +187,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         height: '100%',
-        backgroundColor: '#000048', // Cor do rectangle40.svg (fundo)
+        backgroundColor: '#000048', 
     },
     headerContent: {
         flexDirection: 'row',
@@ -189,7 +197,7 @@ const styles = StyleSheet.create({
         padding: 5,
     },
     backIcon: {
-        width: 30, // Ajustado
+        width: 30, 
         height: 30,
         marginRight: 10,
     },
@@ -203,15 +211,15 @@ const styles = StyleSheet.create({
     // Área de Conteúdo (Menu)
     contentArea: {
         flex: 1,
-        marginTop: 85, // Abaixo do Header
+        marginTop: 85, 
         alignItems: 'center',
-        paddingTop: 30, // Espaçamento interno
+        paddingTop: 30, 
     },
     menuBackground: {
-        width: width * 0.9, // 90% da largura
+        width: width * 0.9, 
         maxWidth: 380,
         paddingVertical: 30,
-        backgroundColor: '#d9d9d9', // Fundo cinza do menu
+        backgroundColor: '#d9d9d9', 
         borderRadius: 15,
         alignItems: 'center',
     },

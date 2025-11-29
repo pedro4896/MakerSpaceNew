@@ -8,14 +8,14 @@ import {
     ScrollView,
     Platform,
 } from "react-native";
-// Importando ícones (necessita da instalação: react-native-vector-icons)
 import { Ionicons as Icon } from '@expo/vector-icons';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from './App'; 
 
-// Mapeamento de Assets (Requer que os arquivos estejam na pasta assets)
+// Mapeamento de Assets 
 const assets = {
-    // Ícones do Header
-    backIcon: require('./assets/image-26.png'), // Logo/Ícone de Voltar (ajustado para funcionar como voltar)
-    searchIcon: require('./assets/image-25.png'), // Ícone de Busca/Ação
+    backIcon: require('./assets/image-26.png'), 
+    searchIcon: require('./assets/image-25.png'), 
 };
 
 // --- Componente de Item de Configuração ---
@@ -27,7 +27,6 @@ interface ConfigItemProps {
 
 const ConfigItem: React.FC<ConfigItemProps> = ({ iconName, title, onPress }) => (
     <TouchableOpacity style={itemStyles.itemContainer} onPress={onPress}>
-        {/* Ícone (Substituindo image28, 29, 30, 31, 33, acessibilidade1) */}
         <View style={itemStyles.iconWrapper}>
             <Icon name={iconName} size={30} color="black" />
         </View>
@@ -41,10 +40,23 @@ const ConfigItem: React.FC<ConfigItemProps> = ({ iconName, title, onPress }) => 
 
 // --- Tela Principal de Configurações ---
 export const Configuraes = (): React.ReactElement => {
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const handleAction = (action: string) => {
         console.log(`Ação clicada: ${action}`);
-        // Aqui você implementaria a navegação ou a lógica da configuração
+        if (action === 'Voltar') {
+            navigation.goBack(); // CORREÇÃO: Chama a função goBack()
+            return;
+        }
+        if (action === 'Dados da conta') {
+            navigation.navigate('Perfil');
+            return;
+        }
+        if (action === 'Sair') {
+            navigation.navigate('Login');
+            return;
+        }
+        // ... outras ações de configurações ...
     };
 
     return (
@@ -56,7 +68,7 @@ export const Configuraes = (): React.ReactElement => {
                 <View style={styles.headerBackground} />
                 <View style={styles.headerContent}>
 
-                    {/* Botão Voltar (image26) */}
+                    {/* Botão Voltar (image26) - CONECTADO */}
                     <TouchableOpacity onPress={() => handleAction('Voltar')} style={styles.backButton}>
                         <Image source={assets.backIcon} style={styles.backIcon} resizeMode="contain" />
                     </TouchableOpacity>
@@ -70,7 +82,7 @@ export const Configuraes = (): React.ReactElement => {
                 </View>
             </View>
 
-            {/* --- LISTA DE CONFIGURAÇÕES (Scrollable) --- */}
+            {/* --- LISTA DE CONFIGURAÇÕES (Scrollable) - CONECTADO */}
             <ScrollView
                 style={styles.scrollView}
                 contentContainerStyle={styles.scrollContent}
@@ -124,19 +136,18 @@ const itemStyles = StyleSheet.create({
         borderBottomColor: '#f0f0f0',
     },
     iconWrapper: {
-        width: 45, // Largura para o ícone
+        width: 45, 
         height: 45,
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 15,
     },
     title: {
-        // Inter-SemiBold_Italic, text-xl, text-black
         fontSize: 20,
         fontWeight: '600',
         fontStyle: 'italic',
         color: 'black',
-        flex: 1, // Garante que o texto ocupe o espaço restante
+        flex: 1, 
     },
 });
 
@@ -153,7 +164,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        height: 80, // Altura suficiente
+        height: 80, 
         zIndex: 10,
         paddingTop: Platform.OS === 'ios' ? 40 : 10,
         paddingHorizontal: 15,
@@ -163,8 +174,8 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        height: 77, // Altura original
-        backgroundColor: '#000048', // Cor do rectangle10.svg
+        height: 77, 
+        backgroundColor: '#000048', 
     },
     headerContent: {
         flexDirection: 'row',
@@ -176,7 +187,7 @@ const styles = StyleSheet.create({
         padding: 5,
     },
     backIcon: {
-        width: 50, // Ajustado
+        width: 50, 
         height: 25,
         marginLeft: 0,
     },
@@ -184,7 +195,6 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 24,
         fontWeight: 'bold',
-        // Alinhamento central para "Configurações"
     },
     searchButton: {
         padding: 5,
@@ -192,13 +202,13 @@ const styles = StyleSheet.create({
     searchIcon: {
         width: 26,
         height: 21,
-        marginRight: 0, // Alinha à direita
+        marginRight: 0, 
     },
 
     // ScrollView (Conteúdo)
     scrollView: {
         flex: 1,
-        marginTop: 77, // Espaço para o Header fixo
+        marginTop: 77, 
     },
     scrollContent: {
         paddingTop: 10,

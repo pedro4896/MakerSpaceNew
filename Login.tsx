@@ -8,26 +8,24 @@ import {
   Image,
   Dimensions,
 } from "react-native";
-// Importação de ícones (Você precisará instalar a biblioteca 'react-native-vector-icons')
-// Exemplo: import Icon from 'react-native-vector-icons/Feather';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from './App'; 
 
 // 1. Definição da largura da tela para estilos responsivos
 const { width, height } = Dimensions.get('window');
 
 // 2. Importação dos assets
-// No Native, a importação é feita via require() e as imagens devem estar
-// na pasta assets ou importadas via URI.
-// Usaremos um placeholder para o robô, pois o caminho original é relativo.
-const robotImage = require('./assets/robot-6654031-640-1.png'); // OBS: Adicione este arquivo na pasta 'assets'
+const robotImage = require('./assets/robot-6654031-640-1.png'); 
 
 export const Login: React.FC = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = () => {
     // Aqui irá a lógica de autenticação
     console.log("Tentativa de Login:", { email, password });
-    // Navegação para a próxima tela...
+    navigation.navigate('Feed'); 
   };
 
   const handleGoogleLogin = () => {
@@ -37,16 +35,15 @@ export const Login: React.FC = () => {
 
   const handleCreateAccount = () => {
     console.log("Criar conta clicado");
-    // Lógica de navegação para a tela de cadastro
+    navigation.navigate('Cadastro');
   };
 
   const handleForgotPassword = () => {
     console.log("Esqueceu a senha clicado");
-    // Lógica de navegação para a tela de recuperação
+    navigation.navigate('Verificacao');
   };
 
   return (
-    // View principal. O flex: 1 garante que a View ocupe toda a tela.
     <View style={styles.container}>
       
       {/* Background Azul Escuro (Substitui a div grande e absoluta) */}
@@ -64,7 +61,6 @@ export const Login: React.FC = () => {
         <Image
           source={robotImage}
           style={styles.robotImage}
-          // Usando um fallback caso a imagem não carregue
           onError={() => console.log('Erro ao carregar imagem do robô')} 
           accessibilityLabel="Mascote robô dando as boas-vindas ao Makerspace"
         />
@@ -161,9 +157,9 @@ const styles = StyleSheet.create({
   // O background azul é mantido absoluto para preencher a parte superior
   blueBackground: {
     position: 'absolute',
-    top: -64, // -top-16 (Ajuste para o topo)
+    top: -64, 
     left: -22,
-    width: width + 44, // Garante que preencha a largura
+    width: width + 44, 
     height: 634,
     backgroundColor: '#000048',
   },
@@ -173,7 +169,7 @@ const styles = StyleSheet.create({
     maxWidth: 412,
     alignItems: 'center',
     paddingHorizontal: 20,
-    position: 'relative', // Para que os elementos sejam posicionados em relação a este wrapper
+    position: 'relative', 
   },
   title: {
     // Inter-BlackItalic, text-[40px], text-white
@@ -181,8 +177,6 @@ const styles = StyleSheet.create({
     fontSize: 40,
     color: 'white',
     textAlign: 'center',
-    // No Native, fontes italic/bold personalizadas podem exigir configuração de assets,
-    // mas usaremos 'italic' e 'black' (900) para simular.
     fontStyle: 'italic', 
     fontWeight: '900', 
     width: '80%',
@@ -191,11 +185,11 @@ const styles = StyleSheet.create({
   },
   robotImage: {
     // w-[412px] h-[420px] object-cover
-    width: width * 0.9, // Usa 90% da largura da tela
+    width: width * 0.9, 
     height: 420,
     resizeMode: 'contain',
     position: 'absolute',
-    top: 192, // Posição de top 48px abaixo do título aproximadamente
+    top: 192, 
     left: 0,
     right: 0,
     zIndex: 1,
@@ -204,25 +198,24 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    width: 235, // Largura fixa do design original
-    height: 56, // h-14
+    width: 235, 
+    height: 56, 
     backgroundColor: '#d9d9d9',
     borderRadius: 15,
     marginBottom: 23,
-    // marginTop será definido dinamicamente no componente
     zIndex: 10,
   },
   inputField: {
     flex: 1,
     height: '100%',
-    paddingLeft: 50, // Espaço para o ícone
+    paddingLeft: 50, 
     fontSize: 14,
     fontWeight: '600',
     color: '#000048',
   },
   iconPlaceholder: {
     position: 'absolute',
-    left: 12, // Posição do ícone
+    left: 12, 
     width: 24,
     height: 24,
     justifyContent: 'center',

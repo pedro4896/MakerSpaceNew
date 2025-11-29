@@ -10,22 +10,21 @@ import {
   Alert,
   Platform,
 } from "react-native";
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from './App'; 
 
-// Importações de assets (Certifique-se de tê-los na pasta assets)
-// Substituí os 'retângulos' por estilos, mas mantive as imagens principais
-const image26 = require('./assets/image-26.png'); // Imagem pequena do topo
-const robotImage = require('./assets/robot-6654031-640-1.png'); // Robô da parte inferior
-
-// Para ícones, o ideal é usar react-native-vector-icons ou SVGs transformados em componentes.
-// Usarei Text/Emoji como placeholder para o ícone de upload.
+// Importações de assets 
+const image26 = require('./assets/image-26.png'); 
+const robotImage = require('./assets/robot-6654031-640-1.png'); 
 
 export const Cadastro = (): React.ReactElement => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [formData, setFormData] = useState({
     username: "",
     login: "",
     password: "",
     email: "",
-    profileImage: null as string | null, // No Native, usamos a URI da imagem (string)
+    profileImage: null as string | null, 
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -36,17 +35,17 @@ export const Cadastro = (): React.ReactElement => {
   };
 
   const handleImagePick = async () => {
-    // Exemplo de como implementar com expo-image-picker:
-    // let result = await ImagePicker.launchImageLibraryAsync({...});
-    // if (!result.canceled) { setFormData({...prev, profileImage: result.assets[0].uri}) }
-    
     Alert.alert("Upload de Imagem", "Aqui abriria a galeria para selecionar a foto.");
     console.log("Abrir seletor de imagem");
   };
 
   const handleSubmit = () => {
     console.log("Formulário submetido:", formData);
-    // Lógica de envio para API
+    navigation.navigate('Verificacao');
+  };
+  
+  const handleGoBack = () => {
+      navigation.goBack(); // CORREÇÃO: Chama a função goBack()
   };
 
   return (
@@ -61,7 +60,10 @@ export const Cadastro = (): React.ReactElement => {
         {/* Fundo do cabeçalho (rectangle10.svg convertido em View) */}
         <View style={styles.headerBackground}>
           <Text style={styles.headerTitle}>Cadastro</Text>
-          <Image source={image26} style={styles.headerIcon} />
+          {/* Botão de Voltar - CONECTADO */}
+          <TouchableOpacity onPress={handleGoBack} style={styles.headerIconWrapper}>
+            <Image source={image26} style={styles.headerIcon} />
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -158,7 +160,7 @@ export const Cadastro = (): React.ReactElement => {
           </View>
         </View>
 
-        {/* Botão Cadastrar */}
+        {/* Botão Cadastrar - CONECTADO */}
         <TouchableOpacity onPress={handleSubmit} style={styles.submitButton}>
           <Text style={styles.submitButtonText}>Cadastrar</Text>
         </TouchableOpacity>
@@ -174,7 +176,7 @@ export const Cadastro = (): React.ReactElement => {
         <Image 
           source={robotImage} 
           style={styles.footerRobot} 
-          resizeMode="contain" // Ou 'cover', dependendo de como quer cortar
+          resizeMode="contain" 
         />
 
         {/* Título Final */}
@@ -194,7 +196,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   scrollContent: {
-    paddingBottom: 0, // O footer já tem altura suficiente
+    paddingBottom: 0, 
     minHeight: '100%',
   },
   
@@ -207,26 +209,28 @@ const styles = StyleSheet.create({
   headerBackground: {
     width: '100%',
     height: '100%',
-    backgroundColor: '#000048', // Cor extraída do rectangle10.svg presumido ou tema
+    backgroundColor: '#000048', 
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-    // Ajuste para simular o layout absoluto do original
     justifyContent: 'flex-start',
   },
   headerTitle: {
     color: 'white',
     fontSize: 24,
     fontWeight: 'bold',
-    marginLeft: 60, // Ajuste para 'left-20' relativo
+    marginLeft: 60, 
+  },
+  headerIconWrapper: {
+    position: 'absolute',
+    left: 5,
+    top: 15,
+    padding: 10,
   },
   headerIcon: {
     width: 81,
     height: 42,
     resizeMode: 'contain',
-    position: 'absolute',
-    left: 5,
-    top: 15,
   },
 
   // Seção de Upload
@@ -238,18 +242,18 @@ const styles = StyleSheet.create({
     width: '90%',
     maxWidth: 397,
     height: 48,
-    borderWidth: 1, // Borda para simular a caixa image.svg
-    borderColor: '#000048', // Cor de borda aproximada
+    borderWidth: 1, 
+    borderColor: '#000048', 
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
-    backgroundColor: '#f0f0f0', // Fundo leve
+    backgroundColor: '#f0f0f0', 
   },
   sectionTitleText: {
     color: '#000048',
     fontSize: 20,
-    fontWeight: '900', // Black
+    fontWeight: '900', 
     fontStyle: 'italic',
   },
   profileImageCircle: {
@@ -300,27 +304,27 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Separa label e input
+    justifyContent: 'space-between', 
   },
   label: {
-    width: '40%', // Ocupa parte esquerda
+    width: '40%', 
     color: '#000048',
     fontSize: 18,
-    fontWeight: '900', // Black
+    fontWeight: '900', 
     fontStyle: 'italic',
   },
   inputWrapper: {
-    width: '60%', // Ocupa parte direita
+    width: '60%', 
     height: 48,
-    backgroundColor: '#f5f5f5', // Simula os retângulos de fundo
+    backgroundColor: '#f5f5f5', 
     borderWidth: 1,
     borderColor: '#d9d9d9',
-    borderRadius: 8, // Ajuste para combinar com design
+    borderRadius: 8, 
     justifyContent: 'center',
   },
   input: {
     paddingHorizontal: 10,
-    color: '#000048', // Cor do texto digitado
+    color: '#000048', 
     fontSize: 16,
     fontStyle: 'italic',
     textAlign: 'center',
@@ -332,7 +336,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
-    alignSelf: 'flex-end', // Alinha à direita como no design (left: 296px)
+    alignSelf: 'flex-end', 
     marginTop: 10,
   },
   submitButtonText: {
@@ -345,7 +349,7 @@ const styles = StyleSheet.create({
   // Footer
   footerContainer: {
     position: 'relative',
-    height: 320, // Altura suficiente para o fundo e robô
+    height: 320, 
     marginTop: 20,
     alignItems: 'center',
   },
@@ -354,26 +358,26 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 314, // top-[603px] até o fim
+    height: 314, 
     backgroundColor: '#000048',
   },
   footerRobot: {
     position: 'absolute',
-    bottom: 0, // Alinhado ao fundo do container azul
+    bottom: 0, 
     left: 0,
     width: '100%',
-    height: 361, // Altura original
+    height: 361, 
     zIndex: 1,
   },
   footerTitle: {
     position: 'absolute',
-    bottom: 10, // Ajuste vertical
+    bottom: 10, 
     color: 'white',
-    fontSize: 32, // Levemente menor que 40px para caber melhor mobile
+    fontSize: 32, 
     fontWeight: '900',
     fontStyle: 'italic',
     textAlign: 'center',
-    zIndex: 2, // Texto sobre o robô/fundo
+    zIndex: 2, 
     width: '80%',
   },
 });
