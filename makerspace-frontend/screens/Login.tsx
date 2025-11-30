@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Dimensions, Alert, ActivityIndicator } from "react-native";
+import { 
+    View, Text, TextInput, StyleSheet, TouchableOpacity, 
+    Image, Dimensions, Alert, ActivityIndicator, 
+    KeyboardAvoidingView, // NOVO
+    Platform,             // NOVO
+    ScrollView            // NOVO
+} from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; 
 import api from '../api';
@@ -10,13 +16,14 @@ const robotImage = require('../assets/robot-6654031-640-1.png');
 
 export const Login: React.FC = () => {
   const navigation = useNavigation<AppNavigationProp>(); 
-  const [email, setEmail] = useState("maker@test.com"); // Email inicial para teste
-  const [password, setPassword] = useState("123456");    // Senha inicial para teste
+  const [email, setEmail] = useState(""); 
+  const [password, setPassword] = useState("");    
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => { 
     if (!email || !password) { Alert.alert("Erro", "Preencha todos os campos."); return; }
     setLoading(true);
+    console.log(`Login clicado com Email: ${email}`); // Log aprimorado
 
     try {
         const response = await api.post('/auth/login', { // Chamada ao endpoint Node.js
@@ -52,42 +59,57 @@ export const Login: React.FC = () => {
   const handleForgotPassword = () => { navigation.navigate('Verificacao'); };
 
   return (
-    <View style={styles.container}>
+    // Usa KeyboardAvoidingView para ajustar o layout ao teclado
+    <KeyboardAvoidingView 
+        style={styles.container} 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
+    >
       <View style={styles.blueBackground} />
-      <View style={styles.contentWrapper}>
-        <Text style={styles.title}> BEM VINDO AO MAKERSPACE </Text>
-        <Image source={robotImage} style={styles.robotImage} onError={() => console.log('Erro ao carregar imagem do robô')} accessibilityLabel="Mascote robô dando as boas-vindas ao Makerspace" />
+      
+      {/* Usa ScrollView para permitir a rolagem do formulário */}
+      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+        <View style={styles.contentWrapper}>
+          <Text style={styles.title}> BEM VINDO AO MAKERSPACE </Text>
+          <Image source={robotImage} style={styles.robotImage} onError={() => console.log('Erro ao carregar imagem do robô')} accessibilityLabel="Mascote robô dando as boas-vindas ao Makerspace" />
 
-        <View style={[styles.inputContainer, { marginTop: email ? 0 : 380 }]}>
-          <View style={styles.iconPlaceholder}> <Text style={styles.iconText}>📧</Text> </View>
-          <TextInput style={styles.inputField} onChangeText={setEmail} value={email} placeholder="Email" placeholderTextColor="#9c9393" keyboardType="email-address" autoCapitalize="none" textContentType="emailAddress" accessibilityLabel="Endereço de email" />
+          {/* Alterado marginTop para um valor fixo para auxiliar no layout com ScrollView */}
+          <View style={[styles.inputContainer, { marginTop: 390 }]}>
+            <View style={styles.iconPlaceholder}> <Text style={styles.iconText}>📧</Text> </View>
+            <TextInput style={styles.inputField} onChangeText={setEmail} value={email} placeholder="Email" placeholderTextColor="#9c9393" keyboardType="email-address" autoCapitalize="none" textContentType="emailAddress" accessibilityLabel="Endereço de email" />
+          </View>
+
+          <View style={styles.inputContainer}>
+            <View style={styles.iconPlaceholder}> <Text style={styles.iconText}>🔒</Text> </View>
+            <TextInput style={styles.inputField} onChangeText={setPassword} value={password} placeholder="Password" placeholderTextColor="#979696" secureTextEntry textContentType="password" accessibilityLabel="Senha" />
+          </View>
+
+          <View style={styles.linkGroup}>
+            <TouchableOpacity onPress={handleCreateAccount}> <Text style={styles.linkText}> Criar conta </Text> </TouchableOpacity>
+            <TouchableOpacity onPress={handleForgotPassword}> <Text style={styles.linkText}> Esqueceu a senha? </Text> </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity onPress={handleLogin} style={styles.loginButton} activeOpacity={0.8} accessibilityLabel="Fazer Login" disabled={loading}>
+            {loading ? ( <ActivityIndicator color="white" /> ) : ( <Text style={styles.loginButtonText}> LOGIN </Text> )}
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => console.log('Google Login')} style={styles.googleButton} activeOpacity={0.7} accessibilityLabel="Fazer Login com Google">
+            <Text style={styles.googleIcon}>G</Text> <Text style={styles.googleButtonText}> Fazer Login </Text>
+          </TouchableOpacity>
         </View>
-
-        <View style={styles.inputContainer}>
-          <View style={styles.iconPlaceholder}> <Text style={styles.iconText}>🔒</Text> </View>
-          <TextInput style={styles.inputField} onChangeText={setPassword} value={password} placeholder="Password" placeholderTextColor="#979696" secureTextEntry textContentType="password" accessibilityLabel="Senha" />
-        </View>
-
-        <View style={styles.linkGroup}>
-          <TouchableOpacity onPress={handleCreateAccount}> <Text style={styles.linkText}> Criar conta </Text> </TouchableOpacity>
-          <TouchableOpacity onPress={handleForgotPassword}> <Text style={styles.linkText}> Esqueceu a senha? </Text> </TouchableOpacity>
-        </View>
-
-        <TouchableOpacity onPress={handleLogin} style={styles.loginButton} activeOpacity={0.8} accessibilityLabel="Fazer Login" disabled={loading}>
-          {loading ? ( <ActivityIndicator color="white" /> ) : ( <Text style={styles.loginButtonText}> LOGIN </Text> )}
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => console.log('Google Login')} style={styles.googleButton} activeOpacity={0.7} accessibilityLabel="Fazer Login com Google">
-          <Text style={styles.googleIcon}>G</Text> <Text style={styles.googleButtonText}> Fazer Login </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 // ... (Estilos Stylesheet)
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: 'white', alignItems: 'center', },
+  // NOVO ESTILO: Garante que o conteúdo dentro do ScrollView possa crescer e ser centralizado
+  scrollContent: { 
+    flexGrow: 1, 
+    alignItems: 'center',
+    paddingBottom: 50, // Adiciona um padding inferior para afastar o conteúdo do teclado
+  },
   blueBackground: { position: 'absolute', top: -64, left: -22, width: width + 44, height: 634, backgroundColor: '#000048', },
   contentWrapper: { width: '100%', maxWidth: 412, alignItems: 'center', paddingHorizontal: 20, position: 'relative', },
   title: { marginTop: 138, fontSize: 40, color: 'white', textAlign: 'center', fontStyle: 'italic', fontWeight: '900', width: '80%', lineHeight: 45, marginBottom: 20, },
