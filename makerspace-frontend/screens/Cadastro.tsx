@@ -1,33 +1,87 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ScrollView, Alert, Platform, Dimensions, ActivityIndicator } from "react-native";
+import { 
+    View, Text, TextInput, StyleSheet, TouchableOpacity, 
+    Image, ScrollView, Alert, Platform, Dimensions, ActivityIndicator 
+} from "react-native";
 import { useNavigation } from '@react-navigation/native';
-import api from '../api'; // <<-- SERVIÇO AXIOS
+import api from '../api'; 
 import { AppNavigationProp } from './App';
+import * as ImagePicker from 'expo-image-picker'; // 🔑 NOVO: Importa o ImagePicker
+import { Ionicons as Icon } from '@expo/vector-icons'; 
 
 const { width } = Dimensions.get('window');
 const image26 = require('../assets/image-26.png'); 
-const robotImage = require('../assets/robot-6654031-640-1.png'); 
 
 export const Cadastro = (): React.ReactElement => {
   const navigation = useNavigation<AppNavigationProp>(); 
   const [formData, setFormData] = useState({
-    username: "", login: "", password: "", email: "", profileImage: null as string | null,
+    username: "", login: "", password: "", email: "", 
+    profileImage: null as string | null, // Guarda o URI da imagem
   });
   const [loading, setLoading] = useState(false);
 
   const handleInputChange = (field: string, value: string) => { setFormData((prev) => ({ ...prev, [field]: value, })); };
-  const handleImagePick = async () => { Alert.alert("Upload de Imagem", "Aqui abriria a galeria para selecionar a foto."); };
+  
+  // 📸 Implementação COMPLETA do ImagePicker
+  const handleImagePick = async () => {
+    if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+            Alert.alert("Permissão Necessária", "Precisamos da permissão para acessar a galeria de fotos.");
+            return;
+        }
+    }
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images, 
+      allowsEditing: true, 
+      aspect: [1, 1], 
+      quality: 0.8, 
+    });
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      const uri = result.assets[0].uri;
+      setFormData((prev) => ({ ...prev, profileImage: uri }));
+    }
+  };
 
   const handleSubmit = async () => {
-    const { email, password, username } = formData;
+    const { email, password, username, login, profileImage } = formData;
     if (!email || !password || !username) { Alert.alert("Erro", "Preencha todos os campos obrigatórios."); return; }
 
     setLoading(true);
+    
+    // 🔑 1. CRIAÇÃO DO FORMDATA: Essencial para enviar arquivos (o que faltava!)
+    const dataToSend = new FormData();
+    dataToSend.append('username', username);
+    dataToSend.append('login', login || username);
+    dataToSend.append('email', email);
+    dataToSend.append('password', password);
+
+    // 🖼️ 2. ANEXANDO O ARQUIVO NO FORMATO REACT NATIVE/EXPO
+    if (profileImage) {
+        const filename = profileImage.split('/').pop();
+        const match = /\.(\w+)$/.exec(filename || '');
+        // Garante um tipo MIME válido
+        const type = match ? `image/${match[1]}` : `image/jpeg`; 
+
+        dataToSend.append('profileImage', {
+            uri: profileImage,
+            name: filename,
+            type: type,
+        } as any); // O nome do campo 'profileImage' deve bater com o multer
+    } else {
+        // Envia null como string se nenhuma imagem for selecionada (tratado pelo backend)
+        dataToSend.append('profileImage', ''); 
+    }
+
+
     try {
-        await api.post('/auth/register', { // Chamada ao endpoint Node.js
-            username: username,
-            email: email,
-            password: password,
+        // 3. ENVIO: Axios lida com Content-Type: multipart/form-data.
+        // O Multer no backend agora irá ler os campos de texto do FormData e o arquivo do req.file.
+        const response = await api.post('/auth/register', dataToSend, {
+             // Força o header caso o api.ts o sobrescreva
+             headers: { 'Content-Type': 'multipart/form-data' },
         });
 
         Alert.alert("Sucesso", "Conta criada! Você pode fazer login agora.");
@@ -37,7 +91,7 @@ export const Cadastro = (): React.ReactElement => {
     } catch (error: any) {
         let errorMessage = "Erro ao criar conta. Verifique sua conexão ou se o email já existe.";
         if (error.response) {
-            errorMessage = error.response.data.message || "Email ou nome de usuário já em uso.";
+            errorMessage = error.response.data.message || "Email ou nome de usuário já em uso, ou falha no upload da imagem.";
         }
         Alert.alert("Erro de Cadastro", errorMessage);
     } finally {
@@ -62,8 +116,21 @@ export const Cadastro = (): React.ReactElement => {
         </View>
       </View>
 
+      {/* 🖼️ SEÇÃO DE UPLOAD */}
       <View style={styles.uploadSection}>
-        {/* ... (Upload Section) */}
+        <View style={styles.sectionTitleContainer}>
+            <Text style={styles.sectionTitleText}>ADICIONE SUA FOTO</Text>
+        </View>
+        <TouchableOpacity onPress={handleImagePick} style={styles.profileImageCircle}>
+            {formData.profileImage ? (
+                <Image source={{ uri: formData.profileImage }} style={styles.uploadedImage} />
+            ) : (
+                <View style={styles.uploadPlaceholder}>
+                    <Icon name="person-circle-outline" size={50} color="#000048" />
+                    <Text style={styles.dragText}>Clique para selecionar</Text>
+                </View>
+            )}
+        </TouchableOpacity>
       </View>
 
       <View style={styles.formContainer}>
@@ -89,7 +156,6 @@ export const Cadastro = (): React.ReactElement => {
   );
 };
 
-// ... (Estilos Stylesheet)
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: 'white', }, scrollContent: { paddingBottom: 0, minHeight: '100%', }, headerContainer: { width: '100%', height: 77, marginBottom: 20, },
   headerBackground: { width: '100%', height: '100%', backgroundColor: '#000048', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, justifyContent: 'flex-start', },

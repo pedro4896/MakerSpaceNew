@@ -24,7 +24,7 @@ export const Configuraes = (): React.ReactElement => {
     const handleLogout = async () => {
         try {
             // 1. Limpa o token armazenado localmente
-            await AsyncStorage.removeItem('token');
+            await AsyncStorage.removeItem('userToken');
 
             // 2. *** CORREÇÃO AQUI: Redefine a pilha de navegação para a tela de Login ***
             navigation.reset({

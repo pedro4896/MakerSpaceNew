@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const db = require('./config/db'); 
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,6 +16,7 @@ app.use(express.json());
 const authRoutes = require('./src/routes/auth');
 const postRoutes = require('./src/routes/posts');
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(API_BASE + '/auth', authRoutes);
 app.use(API_BASE + '/posts', postRoutes);
 
