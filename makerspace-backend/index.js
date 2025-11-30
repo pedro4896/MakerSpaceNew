@@ -10,7 +10,6 @@ const API_BASE = '/api';
 
 // Middlewares Globais
 app.use(cors());
-app.use(express.json());
 
 // Importação e uso das Rotas
 const authRoutes = require('./src/routes/auth');

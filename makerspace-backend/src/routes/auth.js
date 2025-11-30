@@ -93,7 +93,7 @@ router.post('/register', upload.single('profileImage'), async (req, res) => {
 });
 
 // POST /api/auth/login (Login)
-router.post('/login', async (req, res) => {
+router.post('/login', express.json(), async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) { return res.status(400).json({ message: "Preencha todos os campos." }); }
