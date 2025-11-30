@@ -21,25 +21,41 @@ const ConfigItem: React.FC<ConfigItemProps> = ({ iconName, title, onPress }) => 
 export const Configuraes = (): React.ReactElement => {
     const navigation = useNavigation<AppNavigationProp>(); 
 
-    const handleLogout = async () => {
-        Alert.alert(
-            "Sair da Conta", "Tem certeza que deseja sair?",
-            [
-                { text: "Cancelar", style: "cancel" },
-                { text: "Sair", onPress: async () => {
-                        try {
-                            // 1. Remove o token de persistência localmente
-                            await AsyncStorage.removeItem('userToken');
-                            
-                            // 2. Navega para Login (limpa o histórico)
-                            navigation.reset({ index: 0, routes: [{ name: 'Login' }], });
-                        } catch (e) {
-                            Alert.alert("Erro", "Não foi possível encerrar a sessão.");
+const handleLogout = () => {
+        console.log("1. handleLogout chamado. Tentando exibir o Alert."); // Seu log original
+
+        // 💡 CORREÇÃO: Usando setTimeout para resolver problemas de timing/bloqueio do UI Thread
+        setTimeout(() => {
+            Alert.alert(
+                "Sair da Conta", "Tem certeza que deseja sair?",
+                [
+                    { 
+                        text: "Cancelar", 
+                        style: "cancel",
+                        onPress: () => console.log("Ação: Cancelar") 
+                    },
+                    { 
+                        text: "Sair", 
+                        onPress: async () => {
+                            console.log("2. Botão 'Sair' do Alert pressionado. Tentando remover token.");
+                            try {
+                                // 1. Remove o token de persistência localmente
+                                await AsyncStorage.removeItem('userToken');
+                                console.log("3. userToken removido com sucesso."); 
+                                
+                                // 2. Navega para Login (limpa o histórico)
+                                navigation.reset({ index: 0, routes: [{ name: 'Login' }], });
+                                console.log("4. Navegação para Login realizada.");
+                            } catch (e) {
+                                Alert.alert("Erro", "Não foi possível encerrar a sessão.");
+                                console.error("ERRO ASYNCSTORAGE/LOGOUT:", e);
+                            }
                         }
                     }
-                }
-            ]
-        );
+                ]
+            );
+        }, 0); // 0ms garante a execução no próximo tick
+
     };
 
     const handleAction = (action: string) => {

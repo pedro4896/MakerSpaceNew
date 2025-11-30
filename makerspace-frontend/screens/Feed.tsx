@@ -1,3 +1,5 @@
+// makerspace-frontend/screens/Feed.tsx (CÓDIGO CORRIGIDO)
+
 import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, FlatList, Dimensions, Platform, Alert, ActivityIndicator } from "react-native";
 import { Ionicons as Icon } from '@expo/vector-icons';
@@ -7,7 +9,23 @@ import { AppNavigationProp, RootStackParamList } from './App';
 
 const { width } = Dimensions.get('window');
 
-interface PostData { id: string; author: string; authorImage: string; postImage: string; description: string; timestamp: string; }
+// 1. Definição da interface do Autor (AuthorData)
+interface AuthorData {
+  id: string | number;
+  username: string;
+  profileImage: string;
+}
+
+// 2. Definição da interface do Post (PostData) - author agora é do tipo AuthorData
+interface PostData { 
+    id: string; 
+    author: AuthorData; // CORREÇÃO: Agora é um objeto com as chaves do autor
+    authorImage: string; // Pode ser removido ou usado, mas o backend envia em author.profileImage
+    postImage: string; 
+    description: string; 
+    timestamp: string; 
+}
+
 const assets = {
  authorImage1: require('../assets/image-8-3.png'), authorImage2: require('../assets/image-8-2.png'), authorImage3: require('../assets/image-8.png'),
  postImage1: require('../assets/2148863383-1.png'), postImage2: require('../assets/o-ensino-da-robotica-na-infancia-faz-diferenca-para-a-vida-1.png'), postImage3: require('../assets/hq720-1.png'),
@@ -19,22 +37,26 @@ const ActionButton: React.FC<{ label: string; iconName: string }> = ({ label, ic
 );
 
 const Post: React.FC<{ post: PostData }> = ({ post }) => {
-  // Corrigido: Garantindo que o cabeçalho não tenha nós de texto indesejados
  return (
   <View style={postStyles.postContainer}>
    <View style={postStyles.topLine} />
    <View style={postStyles.postHeader}> 
-            <Image source={assets.authorImage1} style={postStyles.authorImage} resizeMode="cover" /> 
-            <Text style={postStyles.authorName}>{post.author}</Text>
+            <Image 
+                source={
+                    // Tenta usar a imagem do perfil do autor ou uma imagem padrão
+                    post.author.profileImage ? { uri: post.author.profileImage } : assets.authorImage1
+                } 
+                style={postStyles.authorImage} 
+                resizeMode="cover" 
+            /> 
+            {/* CORREÇÃO AQUI: Acessando a propriedade .username */}
+            <Text style={postStyles.authorName}>{post.author.username}</Text>
         </View>
    <Image source={{ uri: post.postImage || assets.postImage1 }} style={postStyles.postImage} resizeMode="cover" />
    <View style={postStyles.descriptionContainer}>
-        {/* CORREÇÃO APLICADA AQUI (LINHA 32 ORIGINAL): 
-            Tudo deve estar dentro da primeira tag <Text>, incluindo strings literais.
-            Isso resolve o "Unexpected text node" e garante que apenas strings sejam renderizadas.
-        */}
     <Text style={postStyles.descriptionText}> 
-            <Text style={postStyles.authorNameInDescription}>{post.author} </Text>
+            {/* CORREÇÃO AQUI: Acessando a propriedade .username */}
+            <Text style={postStyles.authorNameInDescription}>{post.author.username} </Text>
             <Text style={postStyles.descriptionContent}>- {post.description}</Text> 
         </Text>
    </View>
@@ -45,7 +67,7 @@ const Post: React.FC<{ post: PostData }> = ({ post }) => {
 };
 
 export const Feed = (): React.ReactElement => {
-// ... (O resto do componente Feed não foi alterado, pois os erros estavam em Post)
+// ... (Resto do componente Feed, sem alterações necessárias)
  const navigation = useNavigation<AppNavigationProp>(); 
  const [posts, setPosts] = useState<PostData[]>([]); 
  const [loading, setLoading] = useState(true);
@@ -53,12 +75,18 @@ export const Feed = (): React.ReactElement => {
  const fetchPosts = async () => {
   try {
     setLoading(true);
-    // GET Request autenticado
     const response = await api.get('/posts'); 
     
-    // Exemplo de dados mockados para garantir que a lista não fique vazia se o backend não estiver rodando
     if (!response.data || response.data.length === 0) {
-      setPosts([{ id: 'mock-1', author: 'Mock User', authorImage: '', postImage: 'https://via.placeholder.com/150', description: 'Post de exemplo: Seu servidor Node.js precisa retornar dados aqui.', timestamp: '2025-11-29' }]);
+      // Mock Data atualizado para corresponder à nova interface
+      setPosts([{ 
+          id: 'mock-1', 
+          author: { id: 0, username: 'Mock User', profileImage: '' }, 
+          authorImage: '', 
+          postImage: 'https://via.placeholder.com/150', 
+          description: 'Post de exemplo: Seu servidor Node.js precisa retornar dados aqui.', 
+          timestamp: '2025-11-29' 
+      } as PostData]); // Assegura que o mock data está no formato correto
     } else {
       setPosts(response.data);
     }
