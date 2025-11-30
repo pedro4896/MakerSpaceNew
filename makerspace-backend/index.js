@@ -1,53 +1,47 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const db = require('./config/db'); 
-const path = require('path');
+const fileUpload = require('express-fileupload');
+const db = require('./config/db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 const API_BASE = '/api';
 
-// Middlewares Globais
+// ⚠️ NÃO USE express.json() AQUI!
+// ⚠️ NÃO USE express.urlencoded() AQUI!
+
 app.use(cors());
 
-// Importação e uso das Rotas
+// fileUpload TEM QUE VIR PRIMEIRO
+app.use(
+  fileUpload({
+    useTempFiles: false,
+    limits: { fileSize: 10 * 1024 * 1024 },
+  })
+);
+
+// ⚠️ JSON somente em rotas que NÃO fazem upload
+// e nunca antes das rotas de upload
+
+// Rotas
 const authRoutes = require('./src/routes/auth');
-const postRoutes = require('./src/routes/posts');
+app.use(`${API_BASE}/auth`, authRoutes);
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use(API_BASE + '/auth', authRoutes);
-app.use(API_BASE + '/posts', postRoutes);
+// iniciar o servidor
+async function start() {
+  try {
+    const client = await db.connect();
+    client.release();
+    console.log("🔥 Banco conectado com sucesso!");
 
-// ROTA DE STATUS DE SAÚDE (HEALTH CHECK) <--- NOVO
-app.get('/', (req, res) => {
-    res.send('MakerSpace Backend is running!');
-});
-// ROTA DE STATUS DA API (HEALTH CHECK) <--- NOVO
-app.get(API_BASE, (req, res) => {
-    res.json({ status: 'API Online', version: '1.0' });
-});
-
-// Teste de Conexão e Início do Servidor
-async function startServer() {
-    let client;
-    try {
-        // Tenta se conectar para garantir que o DB está online
-        client = await db.connect();
-        console.log('PostgreSQL conectado com sucesso (SQL Puro)!');
-        client.release();
-
-        app.listen(PORT, () => {
-            console.log(`Servidor Express rodando em http://localhost:${PORT}`);
-        });
-
-    } catch (err) {
-        console.error('Erro ao conectar com o banco de dados. Certifique-se de que o PostgreSQL está rodando e a DATABASE_URL está correta:', err.message);
-        if (client) {
-            client.release();
-        }
-        process.exit(1);
-    }
+    app.listen(PORT, () =>
+      console.log(`Servidor Express rodando em http://localhost:${PORT}`)
+    );
+  } catch (err) {
+    console.error("Erro ao conectar no banco:", err.message);
+    process.exit(1);
+  }
 }
 
-startServer();
+start();
